@@ -13,4 +13,5 @@ services:
     container_name: {{ service_name }}
     volumes:
       - ./logs:/data/logs
+      - ./config:/data/config
     restart: always
