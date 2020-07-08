@@ -55,10 +55,12 @@ pipeline {
         }
       }
     }
-    stage('Deploy To Dev'){
+    stage('Checkout Configfile'){
       steps {
         checkout([$class: 'GitSCM', branches: [[name: "master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "https://github.com/dc520/config.git"]]])
       }
+    }    
+    stage('Deploy To Dev'){
       steps {
         sh 'ansible -m ping dev_app_servers'
         sh "ansible-playbook deployPlaybook.yml -e var_enviro=DEV -e var_image=${env.IMAGE_URL} -e var_service_name=${env.ServiceName} -e var_hosts=dev_app_servers -e var_port=${env.PORT}"
@@ -82,9 +84,6 @@ pipeline {
       //    expression { env.ENV == "TEST" }
       //} 
       steps {
-        checkout([$class: 'GitSCM', branches: [[name: "master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "https://github.com/dc520/config.git"]]])
-      }
-      steps {
         sh 'ansible -m ping test_app_servers'
         sh "ansible-playbook deployPlaybook.yml -e var_enviro=TEST -e var_image=${env.IMAGE_URL}-e var_service_name=${env.ServiceName} -e var_hosts=test_app_servers -e var_port=${env.PORT}"
       }
@@ -102,10 +101,7 @@ pipeline {
         }
       }
     }   
-    stage('Deploy To Stg'){                     
-      steps {
-        checkout([$class: 'GitSCM', branches: [[name: "master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "https://github.com/dc520/config.git"]]])
-      }                                         
+    stage('Deploy To Stg'){                                                              
       steps {
         sh 'ansible -m ping stg_app_servers'
         sh "ansible-playbook deployPlaybook.yml -e var_enviro=STG -e var_image=${env.IMAGE_URL} -e var_service_name=${env.ServiceName} -e var_hosts=stg_app_servers -e var_port=${env.PORT}"
@@ -124,10 +120,7 @@ pipeline {
         }
       }
     }
-    stage('Deploy To Prod'){
-      steps {
-        checkout([$class: 'GitSCM', branches: [[name: "master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "https://github.com/dc520/config.git"]]])
-      }                        
+    stage('Deploy To Prod'){                       
       steps {
         sh 'ansible -m ping prod_app_servers'
         sh "ansible-playbook deployPlaybook.yml -e var_enviro=PROD -e var_image=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=prod_app_servers -e var_port=${env.PORT}"
