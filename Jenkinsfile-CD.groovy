@@ -24,7 +24,7 @@ pipeline {
       }
       steps {
         sh 'ansible -m ping dev_app_servers'
-        sh "ansible-playbook deployPlaybook.yml -e var_enviro=DEV -e var_image_name=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=dev_app_servers -e var_port=${env.PORT}"
+        sh "ansible-playbook deployPlaybook.yml -e var_enviro=DEV -e var_image=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=dev_app_servers -e var_port=${env.PORT}"
       }
     }
 
@@ -44,7 +44,7 @@ pipeline {
       }
       steps {
         sh 'ansible -m ping test_app_servers'
-        sh "ansible-playbook deployPlaybook.yml -e var_enviro=TEST -e var_image_name=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=test_app_servers -e var_port=${env.PORT}"
+        sh "ansible-playbook deployPlaybook.yml -e var_enviro=TEST -e var_image=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=test_app_servers -e var_port=${env.PORT}"
       }
     }
 
@@ -64,7 +64,7 @@ pipeline {
       }
       steps {
         sh 'ansible -m ping stg_app_servers'
-        sh "ansible-playbook deployPlaybook.yml -e var_enviro=STG -e var_image_name=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=stg_app_servers -e var_port=${env.PORT}"
+        sh "ansible-playbook deployPlaybook.yml -e var_enviro=STG -e var_image=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=stg_app_servers -e var_port=${env.PORT}"
       }
     }
 
@@ -96,7 +96,7 @@ pipeline {
       }
       steps {
         sh 'ansible -m ping prod_app_servers'
-        sh "ansible-playbook deployPlaybook.yml -e var_enviro=PROD -e var_image_name=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=prod_app_servers -e var_port=${env.PORT}"
+        sh "ansible-playbook deployPlaybook.yml -e var_enviro=PROD -e var_image=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=prod_app_servers -e var_port=${env.PORT}"
       }
     }
 
