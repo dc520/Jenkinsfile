@@ -1,0 +1,16 @@
+version: "3.1"
+                              
+services:
+  micro:
+    environment:
+      - ENV={{ env }}
+      - VBLOC={{ country }}
+    env_file:
+      - variables.env
+    image: {{ image }}
+    ports:
+      - {{ port }}:{{ port }}
+    container_name: {{ service_name }}
+    volumes:
+      - ./logs:/data/logs
+    restart: always
