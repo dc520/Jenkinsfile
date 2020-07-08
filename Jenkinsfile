@@ -16,7 +16,7 @@ pipeline {
           env.GIT_COMMIT = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
           env.GIT_COMMIT_SHORT = sh(script: "git log -1 --pretty=format:%h", returnStdout: true).trim()
           env.VERSION = "master" + "-" +env.BUILD_NUMBER + "-" + env.GIT_COMMIT_SHORT
-          env.IMAGE_URL = 'hrb/xxx/' + ${env.ServiceName} + ':' + ${env.VERSION}
+          env.IMAGE_URL = 'hrb/xxx/' + env.ServiceName + ':' + env.VERSION
         }
       }
     }
