@@ -14,8 +14,13 @@
     #- name: docker pull image
     #  command: docker pull {{ image }}
 
-    #- name: Creates directory
-    #  file: path=/data/{{ service_name }} state=directory  
+    - name: Creates directory
+      file: path=/data/{{ service_name }}/config state=directory
+
+    - name: copy config file
+      copy:
+        src: {{ env }}/{{ service_name }}/
+        dest: /data/{{ service_name }}/config
 
     - template:
         src: docker-compose.yml.j2
