@@ -1,0 +1,30 @@
+---
+- hosts: "{{ var_hosts }}"
+  vars:
+    - service_name: "{{ var_service_name }}"
+    - image: "{{ var_image }}"
+    - port: "{{ var_port }}"
+    - env: "{{ var_enviro }}"
+    
+
+  tasks:
+    #- name: docker login
+    #  command: docker login -u {{ xx }} -p {{ xx }} https://{{ hrb }}
+        
+    #- name: docker pull image
+    #  command: docker pull {{ image }}
+
+    #- name: Creates directory
+    #  file: path=/data/{{ service_name }} state=directory  
+
+    - template:
+        src: docker-compose.yml.j2
+        dest: /data/{{ service_name }}/docker-compose.yml
+        owner: root
+        group: root
+        mode: 0644
+        
+    - name: docker run image
+      command: docker-compose up -d
+      args:
+        chdir: /data/{{ service_name }}
