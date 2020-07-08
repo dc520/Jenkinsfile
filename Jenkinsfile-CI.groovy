@@ -23,10 +23,15 @@ pipeline {
         stage('build code') {
             steps {
                 script {
-                   //sh "pwd"
-                   //sh "mvn/ant install command"
-                   echo "pass"
-
+                   sh "pwd"
+                    
+                   if ("${env.Language}" == "NodeJS") {
+                        //sh npm install  //The server where the jenkins server is located requires npm to be installed.
+                       echo "${env.Language}"
+                    } else if ("${env.Language}" == "Java") {
+                        //sh "mvn/ant install command"  //The server where the jenkins server is located requires maven/ant to be installed.
+                       echo "${env.Language}"
+                    }
                 }
             }
         }    
