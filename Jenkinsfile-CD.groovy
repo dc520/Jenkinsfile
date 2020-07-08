@@ -7,21 +7,20 @@ pipeline {
 
   stages {
 
-    stage('Setup') {
-      steps {
-        script {
-          if (env.ENV == 'DEV') {
-            
-          } 
-
-        }
-      }
-    }
-
+    
+    
     stage('Deploy To Dev'){
       when {
-          expression { env.ENV == "DEV" }
+        expression { env.ENV == "DEV" }
       }
+      
+     
+      
+      steps {
+              checkout([$class: 'GitSCM', branches: [[name: "master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "https://github.com/dc520/config.git"]]])
+            }
+      
+      
       steps {
         sh 'ansible -m ping dev_app_servers'
         sh "ansible-playbook deployPlaybook.yml -e var_enviro=DEV -e var_image=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=dev_app_servers -e var_port=${env.PORT}"
@@ -42,6 +41,12 @@ pipeline {
       when {
           expression { env.ENV == "TEST" }
       }
+      
+      steps {
+              checkout([$class: 'GitSCM', branches: [[name: "master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "https://github.com/dc520/config.git"]]])
+      }
+      
+      
       steps {
         sh 'ansible -m ping test_app_servers'
         sh "ansible-playbook deployPlaybook.yml -e var_enviro=TEST -e var_image=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=test_app_servers -e var_port=${env.PORT}"
@@ -62,6 +67,11 @@ pipeline {
       when {
           expression { (env.ENV == "STG" }
       }
+                        
+      steps {
+              checkout([$class: 'GitSCM', branches: [[name: "master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "https://github.com/dc520/config.git"]]])
+      }                        
+                        
       steps {
         sh 'ansible -m ping stg_app_servers'
         sh "ansible-playbook deployPlaybook.yml -e var_enviro=STG -e var_image=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=stg_app_servers -e var_port=${env.PORT}"
@@ -80,11 +90,11 @@ pipeline {
 
     stage('Approval to Prod'){
       when {
-          expression { env.BRANCH_NAME == 'master' && env.COUNTRY == 'cn' }
+          expression { (env.ENV == "PROD" }
       }
       steps {
         timeout(time:3600, unit:'SECONDS') {  // DAYS , MINUTES
-             input 'Do you approve deployment to Staging?'
+             input 'Do you approve deployment to Prod?'
         }
       }
     }
@@ -94,6 +104,9 @@ pipeline {
       when {
           expression { (env.ENV == "PROD" }
       }
+      steps {
+              checkout([$class: 'GitSCM', branches: [[name: "master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "https://github.com/dc520/config.git"]]])
+      }                        
       steps {
         sh 'ansible -m ping prod_app_servers'
         sh "ansible-playbook deployPlaybook.yml -e var_enviro=PROD -e var_image=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=prod_app_servers -e var_port=${env.PORT}"
