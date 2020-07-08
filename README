@@ -1,0 +1,48 @@
+About the design of CI:
+The finished code built by CI must not contain any environmental information. 
+You need to separate all the areas that will involve environmental differentiation into configuration files. 
+The configuration file is used to distinguish the environment of the finished code.
+
+The configuration file will be separated from the code and will be hosted separately in the place where the configuration file is specifically managed. In my current design, the configuration files are centralized and stored separately in a git repository. A better approach is to use some open source software for configuration management or write a system for managing configuration files yourself.
+
+When creating a CI job, several initial default parameters will be generated, including the default branch of git, the naming of the application, the git repository address of the application, and the development language used by the application.
+
+These parameters are already defined when the project starts, so they can be easily obtained. When creating a CI job, pass these contents in the form of parameters to the automated script that creates the job to create a CI job that can be used.
+
+
+About the design of the CD:
+In the CD I designed, there are two main things to do.
+1: Publish code
+2: Release configuration
+
+
+We have separated the configuration file from the CI, which means that the configuration file needs to be released during the CD process.
+The distribution of configuration files is also divided into three situations:
+1: Publish code only
+2: Publish only the configuration file
+3: Both code and configuration files are released
+
+Therefore, we need to judge these three situations in the pipeline. We fixed a config parameter in the CD job. If the value of this parameter is true, it means that the configuration file needs to be published. If the value of this parameter is empty or false, then there is no need to publish the configuration file.
+
+This has already judged the above two situations.
+
+When we publish the code, we can be sure that we must provide a new version of the code so that the code can be released. Therefore, there will be a fixed parameter in our CD job, which is the IMAGE parameter.
+We use the IMAGE parameter is empty to determine whether this release is only to release the configuration file and not to release the code.
+
+
+Under limited conditions, the release of the code simply used the template function of ansible playbook to render a docker-compose.yaml file, and then transferred the docker-compose.yaml file to the remote server, and finally started using docker-compose container.
+The process of starting the container should be a rolling upgrade process. If you have multiple copies of the server node in your environment, then the operation of updating your code should strictly abide by the principle of only releasing one at a time. Only after the published server passes the health check can the next node be operated again.
+
+
+The ideal situation is:
+
+You can achieve a perfect rolling upgrade through automated scripts.
+
+Suppose you have two copies running in a production environment. During the rolling upgrade, we should start a new program process based on the existing copy of the environment. After the new code is released and started, its listening port should be Random, and does not conflict with any existing port. After the new application is started, you need to do a health check on it separately. The health check includes sending probes to this application to check whether the infrastructure components it depends on are normal, such as nginx.
+After it passes the health check, your publishing script can update the configuration of the proxy server and reload it to add the newly started program to the back of the proxy server.
+
+At this time, the number of copies of your application will become three. But then you can start to remove an application node with old code.
+
+When you offline an old application node, you can start to update the code on another node, and eventually replace the old code program with all the new code programs.
+
+The duration of the entire process is related to the application startup time. In the process of rolling upgrades, new and old versions of the code will briefly appear while providing external services
