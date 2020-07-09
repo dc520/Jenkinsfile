@@ -55,6 +55,7 @@ pipeline {
         }
       }
     }
+    //The approach here is to publish the configuration file by default. You can add job parameters to control whether to publish configuration files.
     stage('Checkout Configfile'){
       steps {
         checkout([$class: 'GitSCM', branches: [[name: "master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "https://github.com/dc520/config.git"]]])
@@ -62,8 +63,9 @@ pipeline {
     }    
     stage('Deploy To Dev'){
       steps {
-        sh 'ansible -m ping dev_app_servers'
-        sh "ansible-playbook deployPlaybook.yml -e var_enviro=DEV -e var_image=${env.IMAGE_URL} -e var_service_name=${env.ServiceName} -e var_hosts=dev_app_servers -e var_port=${env.PORT}"
+        //sh 'ansible -m ping dev_app_servers'
+        //sh "ansible-playbook deployPlaybook.yml -e var_enviro=DEV -e var_image=${env.IMAGE_URL} -e var_service_name=${env.ServiceName} -e var_hosts=dev_app_servers -e var_port=${env.PORT}"
+        sh "echo pass"
       }
     }
     stage('Check Dev Service Up') {
@@ -84,8 +86,9 @@ pipeline {
       //    expression { env.ENV == "TEST" }
       //} 
       steps {
-        sh 'ansible -m ping test_app_servers'
-        sh "ansible-playbook deployPlaybook.yml -e var_enviro=TEST -e var_image=${env.IMAGE_URL}-e var_service_name=${env.ServiceName} -e var_hosts=test_app_servers -e var_port=${env.PORT}"
+        //sh 'ansible -m ping test_app_servers'
+        //sh "ansible-playbook deployPlaybook.yml -e var_enviro=TEST -e var_image=${env.IMAGE_URL}-e var_service_name=${env.ServiceName} -e var_hosts=test_app_servers -e var_port=${env.PORT}"
+        sh "echo pass"
       }
     }
     stage('Check Test Service Up') {
@@ -103,8 +106,9 @@ pipeline {
     }   
     stage('Deploy To Stg'){                                                              
       steps {
-        sh 'ansible -m ping stg_app_servers'
-        sh "ansible-playbook deployPlaybook.yml -e var_enviro=STG -e var_image=${env.IMAGE_URL} -e var_service_name=${env.ServiceName} -e var_hosts=stg_app_servers -e var_port=${env.PORT}"
+        //sh 'ansible -m ping stg_app_servers'
+        //sh "ansible-playbook deployPlaybook.yml -e var_enviro=STG -e var_image=${env.IMAGE_URL} -e var_service_name=${env.ServiceName} -e var_hosts=stg_app_servers -e var_port=${env.PORT}"
+        sh "echo pass"
       }
     }
     stage('Check Stage Service Up') {
@@ -122,8 +126,9 @@ pipeline {
     }
     stage('Deploy To Prod'){                       
       steps {
-        sh 'ansible -m ping prod_app_servers'
-        sh "ansible-playbook deployPlaybook.yml -e var_enviro=PROD -e var_image=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=prod_app_servers -e var_port=${env.PORT}"
+        //sh 'ansible -m ping prod_app_servers'
+        //sh "ansible-playbook deployPlaybook.yml -e var_enviro=PROD -e var_image=${env.IMAGE} -e var_service_name=${env.ServiceName} -e var_hosts=prod_app_servers -e var_port=${env.PORT}"
+        sh "echo pass"
       }
     }
     stage('Check Prod Service Up') {
