@@ -95,7 +95,7 @@ pipeline {
       //} 
       steps {
         sh 'ansible -m ping test_app_servers'
-        sh "ansible-playbook deployPlaybook.yml -e var_enviro=TEST -e var_image=${env.IMAGE_URL}-e var_service_name=${env.ServiceName} -e var_hosts=test_app_servers -e var_port=${env.PORT}"
+        sh "ansible-playbook deployPlaybook.yml -e var_enviro=TEST -e var_image=product/${env.ServiceName}:${env.VERSION} -e var_service_name=${env.ServiceName} -e var_hosts=test_app_servers -e var_port=${env.PORT}"
       }
     }
     stage('Check Test Service Up') {
