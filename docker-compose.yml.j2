@@ -4,8 +4,6 @@ services:
   micro:
     environment:
       - ENV={{ env }}
-    env_file:
-      - variables.env
     image: {{ image }}
     ports:
       - {{ port }}:{{ port }}
