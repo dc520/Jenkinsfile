@@ -73,7 +73,7 @@ pipeline {
     stage('Deploy To Dev'){
       steps {
         sh 'ansible -m ping dev_app_servers'
-        sh "ansible-playbook deployPlaybook.yml -e var_enviro=DEV -e var_image=${env.IMAGE_URL} -e var_service_name=${env.ServiceName} -e var_hosts=dev_app_servers -e var_port=${env.PORT}"
+        sh "ansible-playbook deployPlaybook.yml -e var_enviro=DEV -e var_image=product/${env.ServiceName}:${env.VERSION} -e var_service_name=${env.ServiceName} -e var_hosts=dev_app_servers -e var_port=${env.PORT}"
       }
     }
     stage('Check Dev Service Up') {
