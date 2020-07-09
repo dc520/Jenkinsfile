@@ -4,7 +4,6 @@ services:
   micro:
     environment:
       - ENV={{ env }}
-      - VBLOC={{ country }}
     env_file:
       - variables.env
     image: {{ image }}
