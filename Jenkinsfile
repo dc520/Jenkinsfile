@@ -107,7 +107,7 @@ pipeline {
     stage('Approval to Stg'){
       steps {
         timeout(time:3600, unit:'SECONDS') {  // DAYS , MINUTES
-          input 'Do you approve deployment to Test?'
+          input 'Do you approve deployment to Stg?'
         }
       }
     }   
