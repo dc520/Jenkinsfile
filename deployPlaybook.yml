@@ -19,7 +19,7 @@
 
     - name: copy config file
       copy:
-        src: {{ env }}/{{ service_name }}/
+        src: config/{{ env }}/{{ service_name }}/
         dest: /data/{{ service_name }}/config
 
     - template:
